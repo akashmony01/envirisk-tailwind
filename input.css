@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Mona+Sans:ital,wght@0,200..900;1,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+@source "./*.html";
+
+@theme {
+  --font-public: "Public Sans", sans-serif;
+  --font-mona: "Mona Sans", sans-serif;
+  --color-bgc-1: #fff;
+  --color-bgc-2: #F5F5F5;
+  --color-bgc-3: #0A1119;
+  --color-bgc-4: #000;
+  
+  --color-ovc-1: #051C2C4D;
+  --color-ovc-2: #051C2CCC;
+  --color-ovc-3: #000;
+  --color-ovc-4: #0A11191A;
+
+
+  --color-fnc-1: #000;
+  --color-fnc-2: #4B535D;
+  --color-fnc-3: #fff;
+  --color-fnc-4: #097C7D;
+  
+  --color-bdc-1: #0A11191A;
+  --color-bdc-2: #909090;  
+  --color-bdc-3: #FFFFFF1A;
+  --color-bdc-4: #fff;
+
+  --color-icc-1: #20282D;
+  --color-icc-2: #097C7D;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-public);
+    font-style: normal;
+    color: black;
+  }
+
+  .container {
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+
+  @media (width < 1536px) {
+    .container { max-width: 100%!important; }
+  }
+  
+  @media (width >= 1536px) {
+    .container { max-width: 1480px!important; }
+  }
+
+  a {
+    @apply duration-300;
+  }
+
+
+  [x-cloak] { display: none !important; }
+}

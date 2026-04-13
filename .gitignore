@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+*.npm
+*.yarn
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+.next/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Videos in assets
+assets/**/*.mp4
+assets/**/*.mov
+assets/**/*.avi
+assets/**/*.mkv
+assets/**/*.webm
+assets/videos/
+
+chat/
+
+tailwindcss
