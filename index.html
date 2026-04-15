@@ -16,16 +16,27 @@
   <!-- Header / Nav                                                  -->
   <!-- ============================================================= -->
   <header
-    x-data="{ open: false, scrolled: false }"
+    x-data="{
+      open: false,
+      scrolled: false,
+      desktopMenu: null,
+      mobileMenu: null,
+      toggleMobile() {
+        this.open = !this.open;
+        this.mobileMenu = null;
+        document.body.style.overflow = this.open ? 'hidden' : '';
+      }
+    }"
     x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 10)"
-    :class="scrolled ? 'bg-bgc-1/90 backdrop-blur border-b border-bdc-1' : 'bg-transparent border-b border-transparent'"
+    @keydown.escape.window="open && toggleMobile(); desktopMenu = null"
+    :class="(scrolled || desktopMenu) ? 'bg-bgc-1/90 backdrop-blur border-b border-bdc-1' : 'bg-transparent border-b border-transparent'"
     class="fixed top-0 inset-x-0 z-50 transition-colors duration-300"
   >
     <div class="container">
       <div class="flex items-center justify-between h-[72px] lg:h-[84px]">
 
         <!-- Logo -->
-        <a href="index.html" class="flex items-center gap-2 font-mona font-semibold text-[20px] lg:text-[22px]">
+        <a href="index.html" :class="open ? 'text-fnc-3' : ''" class="relative z-[60] flex items-center gap-2 font-mona font-semibold text-[20px] lg:text-[22px]">
           <span class="
             inline-flex items-center justify-center w-8 h-8 rounded-full
             bg-gradient-to-br from-[var(--color-icc-1)] to-[var(--color-icc-2)]
@@ -37,16 +48,264 @@
         </a>
 
         <!-- Desktop menu -->
-        <nav class="hidden lg:flex items-center gap-8">
-          <a href="index.html"        class="text-[15px] font-semibold hover:text-fnc-4">Home</a>
-          <a href="services.html"     class="text-[15px] font-semibold hover:text-fnc-4">Services</a>
-          <a href="cases.html"        class="text-[15px] font-semibold hover:text-fnc-4">Case Studies</a>
-          <a href="blog.html"         class="text-[15px] font-semibold hover:text-fnc-4">Insights</a>
-          <a href="#contact"          class="text-[15px] font-semibold hover:text-fnc-4">Contact</a>
+        <nav class="hidden lg:flex items-center gap-1" @mouseleave="desktopMenu = null">
+          <a href="index.html" class="px-4 py-2 text-[15px] font-semibold hover:text-fnc-4 transition-colors">Home</a>
+
+          <!-- Services mega menu -->
+          <div class="relative" @mouseenter="desktopMenu = 'services'">
+            <button
+              @click="desktopMenu = desktopMenu === 'services' ? null : 'services'"
+              :class="desktopMenu === 'services' ? 'text-fnc-4' : ''"
+              class="flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold hover:text-fnc-4 transition-colors"
+            >
+              Services
+              <svg :class="desktopMenu === 'services' ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 transition-transform duration-300"><path d="M12 15.5 5.5 9l1.4-1.4L12 12.7l5.1-5.1L18.5 9z"/></svg>
+            </button>
+            <div
+              x-show="desktopMenu === 'services'" x-cloak
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              class="absolute left-0 top-full pt-3 z-40"
+            >
+              <div class="w-[880px] rounded-[22px] bg-bgc-1 border border-bdc-1 shadow-2xl shadow-black/10 overflow-hidden">
+                <div class="grid grid-cols-12">
+                  <!-- Promo card -->
+                  <a href="services.html" class="col-span-4 relative min-h-[340px] p-5 flex flex-col justify-end text-fnc-3 group overflow-hidden">
+                    <img src="https://picsum.photos/seed/envmega-services/700/900" alt="" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bgc-3 via-bgc-3/70 to-bgc-3/20"></div>
+                    <div class="relative">
+                      <span class="text-[11px] uppercase tracking-wider text-fnc-4 font-semibold">What we do</span>
+                      <h4 class="mt-2 font-mona font-semibold text-[20px] leading-tight">Environmental risk, end-to-end.</h4>
+                      <p class="mt-2 text-[12px] text-fnc-3/70 leading-relaxed">From site-level audits to boardroom strategy — helping 320+ organisations stay ahead of regulators.</p>
+                      <span class="mt-4 inline-flex items-center gap-1.5 text-[12px] font-semibold text-fnc-4">
+                        Book a scoping call
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 group-hover:translate-x-0.5 transition-transform"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+                      </span>
+                    </div>
+                  </a>
+
+                  <!-- Capabilities column -->
+                  <div class="col-span-4 p-4 border-l border-bdc-1">
+                    <div class="px-2 pb-2 text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">Capabilities</div>
+                    <a href="service-single.html" class="group flex items-start gap-3 p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="mt-0.5 inline-flex w-8 h-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-icc-2)]/10 text-fnc-4 group-hover:bg-fnc-4 group-hover:text-fnc-3 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6z"/></svg>
+                      </span>
+                      <span class="flex flex-col">
+                        <span class="font-mona font-semibold text-[13px]">Environmental Risk</span>
+                        <span class="text-[11px] text-fnc-2 mt-0.5">Site due diligence & ESG</span>
+                      </span>
+                    </a>
+                    <a href="service-single.html" class="group flex items-start gap-3 p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="mt-0.5 inline-flex w-8 h-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-icc-2)]/10 text-fnc-4 group-hover:bg-fnc-4 group-hover:text-fnc-3 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M6 19a5 5 0 0 1-1-9.9 7 7 0 0 1 13.6 1.5A4.5 4.5 0 0 1 17.5 19z"/></svg>
+                      </span>
+                      <span class="flex flex-col">
+                        <span class="font-mona font-semibold text-[13px]">Climate Advisory</span>
+                        <span class="text-[11px] text-fnc-2 mt-0.5">Live data & monitoring</span>
+                      </span>
+                    </a>
+                    <a href="service-single.html" class="group flex items-start gap-3 p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="mt-0.5 inline-flex w-8 h-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-icc-2)]/10 text-fnc-4 group-hover:bg-fnc-4 group-hover:text-fnc-3 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M3 13h8V3H3zm0 8h8v-6H3zm10 0h8V11h-8zm0-18v6h8V3z"/></svg>
+                      </span>
+                      <span class="flex flex-col">
+                        <span class="font-mona font-semibold text-[13px]">Sustainability Strategy</span>
+                        <span class="text-[11px] text-fnc-2 mt-0.5">Boardroom roadmaps</span>
+                      </span>
+                    </a>
+                    <a href="service-single.html" class="group flex items-start gap-3 p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="mt-0.5 inline-flex w-8 h-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-icc-2)]/10 text-fnc-4 group-hover:bg-fnc-4 group-hover:text-fnc-3 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2 2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                      </span>
+                      <span class="flex flex-col">
+                        <span class="font-mona font-semibold text-[13px]">Regulatory Disclosure</span>
+                        <span class="text-[11px] text-fnc-2 mt-0.5">Reporting & compliance</span>
+                      </span>
+                    </a>
+                  </div>
+
+                  <!-- Industries column -->
+                  <div class="col-span-4 p-4 border-l border-bdc-1">
+                    <div class="px-2 pb-2 text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">By industry</div>
+                    <a href="services.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="font-mona font-semibold text-[13px]">Energy & Utilities</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">Renewables, grid, oil & gas</span>
+                    </a>
+                    <a href="services.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="font-mona font-semibold text-[13px]">Finance & Insurance</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">Portfolio climate risk</span>
+                    </a>
+                    <a href="services.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="font-mona font-semibold text-[13px]">Infrastructure</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">Resilience & adaptation</span>
+                    </a>
+                    <a href="services.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="font-mona font-semibold text-[13px]">Public Sector</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">Policy & disclosure</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Bottom bar -->
+                <div class="border-t border-bdc-1 bg-bgc-2 px-5 py-3 flex items-center justify-between">
+                  <span class="text-[12px] text-fnc-2">Need something bespoke? We scope bespoke engagements in 48h.</span>
+                  <a href="services.html" class="inline-flex items-center gap-2 text-[13px] font-mona font-semibold text-fnc-1 hover:text-fnc-4 transition-colors">
+                    View all services
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case Studies mega menu -->
+          <div class="relative" @mouseenter="desktopMenu = 'cases'">
+            <button
+              @click="desktopMenu = desktopMenu === 'cases' ? null : 'cases'"
+              :class="desktopMenu === 'cases' ? 'text-fnc-4' : ''"
+              class="flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold hover:text-fnc-4 transition-colors"
+            >
+              Case Studies
+              <svg :class="desktopMenu === 'cases' ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 transition-transform duration-300"><path d="M12 15.5 5.5 9l1.4-1.4L12 12.7l5.1-5.1L18.5 9z"/></svg>
+            </button>
+            <div
+              x-show="desktopMenu === 'cases'" x-cloak
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              class="absolute left-1/2 -translate-x-1/2 top-full pt-3 z-40"
+            >
+              <div class="w-[780px] rounded-[22px] bg-bgc-1 border border-bdc-1 shadow-2xl shadow-black/10 overflow-hidden">
+                <div class="grid grid-cols-12">
+                  <!-- Featured case -->
+                  <a href="case-single.html" class="col-span-5 relative min-h-[320px] p-5 flex flex-col justify-end text-fnc-3 group overflow-hidden">
+                    <img src="https://picsum.photos/seed/envmega-case/700/900" alt="" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bgc-3 via-bgc-3/60 to-transparent"></div>
+                    <div class="relative">
+                      <span class="inline-block text-[10px] uppercase tracking-wider text-fnc-3 font-semibold px-2 py-1 rounded-full bg-fnc-4/80 backdrop-blur">Featured · Energy</span>
+                      <h4 class="mt-3 font-mona font-semibold text-[18px] leading-tight">Offshore wind risk modelling across the North Sea</h4>
+                      <p class="mt-2 text-[12px] text-fnc-3/70">How we cut exposure assessment time by 60% for a Tier-1 operator.</p>
+                    </div>
+                  </a>
+
+                  <!-- Recent work -->
+                  <div class="col-span-4 p-4 border-l border-bdc-1">
+                    <div class="px-2 pb-2 text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">Recent work</div>
+                    <a href="case-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="text-[10px] uppercase tracking-wider text-fnc-4 font-semibold">Finance</span>
+                      <span class="block font-mona font-semibold text-[13px] mt-0.5 leading-snug">Portfolio climate stress test</span>
+                    </a>
+                    <a href="case-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="text-[10px] uppercase tracking-wider text-fnc-4 font-semibold">Infrastructure</span>
+                      <span class="block font-mona font-semibold text-[13px] mt-0.5 leading-snug">Coastal resilience audit</span>
+                    </a>
+                    <a href="case-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="text-[10px] uppercase tracking-wider text-fnc-4 font-semibold">Public sector</span>
+                      <span class="block font-mona font-semibold text-[13px] mt-0.5 leading-snug">City heat-risk mapping</span>
+                    </a>
+                    <a href="case-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="text-[10px] uppercase tracking-wider text-fnc-4 font-semibold">Manufacturing</span>
+                      <span class="block font-mona font-semibold text-[13px] mt-0.5 leading-snug">Supply-chain water audit</span>
+                    </a>
+                  </div>
+
+                  <!-- By industry -->
+                  <div class="col-span-3 p-4 border-l border-bdc-1">
+                    <div class="px-2 pb-2 text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">Browse by</div>
+                    <a href="cases.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Energy</a>
+                    <a href="cases.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Finance</a>
+                    <a href="cases.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Infrastructure</a>
+                    <a href="cases.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Public sector</a>
+                  </div>
+                </div>
+
+                <!-- Bottom bar -->
+                <div class="border-t border-bdc-1 bg-bgc-2 px-5 py-3 flex items-center justify-between">
+                  <span class="text-[12px] text-fnc-2">80+ engagements delivered across 14 sectors.</span>
+                  <a href="cases.html" class="inline-flex items-center gap-2 text-[13px] font-mona font-semibold text-fnc-1 hover:text-fnc-4 transition-colors">
+                    Browse all cases
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights mega menu -->
+          <div class="relative" @mouseenter="desktopMenu = 'insights'">
+            <button
+              @click="desktopMenu = desktopMenu === 'insights' ? null : 'insights'"
+              :class="desktopMenu === 'insights' ? 'text-fnc-4' : ''"
+              class="flex items-center gap-1.5 px-4 py-2 text-[15px] font-semibold hover:text-fnc-4 transition-colors"
+            >
+              Insights
+              <svg :class="desktopMenu === 'insights' ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 transition-transform duration-300"><path d="M12 15.5 5.5 9l1.4-1.4L12 12.7l5.1-5.1L18.5 9z"/></svg>
+            </button>
+            <div
+              x-show="desktopMenu === 'insights'" x-cloak
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              class="absolute right-0 top-full pt-3 z-40"
+            >
+              <div class="w-[760px] rounded-[22px] bg-bgc-1 border border-bdc-1 shadow-2xl shadow-black/10 overflow-hidden">
+                <div class="grid grid-cols-12">
+                  <!-- Featured article -->
+                  <a href="blog-single.html" class="col-span-5 p-4 group">
+                    <div class="relative aspect-[5/3.5] rounded-[14px] overflow-hidden">
+                      <img src="https://picsum.photos/seed/envmega-article/700/500" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <span class="mt-3 inline-block text-[10px] uppercase tracking-wider text-fnc-4 font-semibold">Latest · Research</span>
+                    <h4 class="mt-1 font-mona font-semibold text-[15px] leading-snug group-hover:text-fnc-4 transition-colors">The 2026 TCFD playbook: what's actually changing</h4>
+                    <p class="mt-1 text-[12px] text-fnc-2 leading-relaxed">A practitioner's read on the latest disclosure rules, with sector-by-sector guidance.</p>
+                  </a>
+
+                  <!-- Latest articles -->
+                  <div class="col-span-4 p-4 border-l border-bdc-1">
+                    <div class="px-2 pb-2 text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">Latest articles</div>
+                    <a href="blog-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="block font-mona font-semibold text-[13px] leading-snug">Scope 3 in a week: a field guide</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">6 min read</span>
+                    </a>
+                    <a href="blog-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="block font-mona font-semibold text-[13px] leading-snug">Why materiality maps still matter</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">4 min read</span>
+                    </a>
+                    <a href="blog-single.html" class="block p-2 rounded-lg hover:bg-bgc-2 transition-colors">
+                      <span class="block font-mona font-semibold text-[13px] leading-snug">Physical risk vs transition risk</span>
+                      <span class="block text-[11px] text-fnc-2 mt-0.5">8 min read</span>
+                    </a>
+                  </div>
+
+                  <!-- Topics -->
+                  <div class="col-span-3 p-4 border-l border-bdc-1">
+                    <div class="px-2 pb-2 text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">Topics</div>
+                    <a href="blog.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Climate research</a>
+                    <a href="blog.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Regulatory</a>
+                    <a href="blog.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">ESG strategy</a>
+                    <a href="blog.html" class="block p-2 rounded-lg text-[13px] font-mona font-semibold hover:bg-bgc-2 hover:text-fnc-4 transition-colors">Field notes</a>
+                  </div>
+                </div>
+
+                <!-- Bottom bar -->
+                <div class="border-t border-bdc-1 bg-bgc-2 px-5 py-3 flex items-center justify-between">
+                  <span class="text-[12px] text-fnc-2">Monthly briefings for risk, finance & sustainability teams.</span>
+                  <a href="blog.html" class="inline-flex items-center gap-2 text-[13px] font-mona font-semibold text-fnc-1 hover:text-fnc-4 transition-colors">
+                    All articles
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <a href="#contact" class="px-4 py-2 text-[15px] font-semibold hover:text-fnc-4 transition-colors">Contact</a>
         </nav>
 
         <!-- Right actions -->
-        <div class="flex items-center gap-3">
+        <div class="relative z-[60] flex items-center gap-3">
           <a
             href="#contact"
             class="
@@ -64,8 +323,9 @@
 
           <!-- Mobile toggle -->
           <button
-            @click="open = !open"
-            class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-full border border-bdc-1"
+            @click="toggleMobile()"
+            :class="open ? 'border-fnc-3/30 text-fnc-3' : 'border-bdc-1'"
+            class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border transition-colors"
             aria-label="Toggle menu"
           >
             <svg x-show="!open"       xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
@@ -74,29 +334,130 @@
         </div>
       </div>
 
-      <!-- Mobile menu -->
-      <div
-        x-show="open" x-cloak
-        x-transition.opacity
-        class="lg:hidden pb-6 flex flex-col gap-4 border-t border-bdc-1 pt-5"
-      >
-        <a href="index.html"    class="text-[16px] font-semibold">Home</a>
-        <a href="services.html" class="text-[16px] font-semibold">Services</a>
-        <a href="cases.html"    class="text-[16px] font-semibold">Case Studies</a>
-        <a href="blog.html"     class="text-[16px] font-semibold">Insights</a>
-        <a href="#contact"      class="text-[16px] font-semibold">Contact</a>
-        <a
-          href="#contact"
-          class="
-            inline-flex items-center justify-center gap-2 mt-2
-            bg-bgc-3 text-fnc-3 font-semibold font-mona
-            px-5 py-3 rounded-full w-full
-          "
-        >
-          Get a quote
-        </a>
+    </div>
+
+    <!-- Mobile full-screen menu (teleported to body to escape header's backdrop-blur containing block) -->
+    <template x-teleport="body">
+    <div
+      x-show="open" x-cloak
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="transition ease-in duration-200"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+      class="lg:hidden fixed inset-0 z-[55] bg-bgc-3 text-fnc-3 overflow-y-auto overflow-x-hidden"
+    >
+      <!-- Glow accents -->
+      <div class="pointer-events-none absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full blur-3xl opacity-25 bg-[radial-gradient(circle,_var(--color-icc-2)_0%,_transparent_70%)]"></div>
+      <div class="pointer-events-none absolute -bottom-32 -left-24 w-[380px] h-[380px] rounded-full blur-3xl opacity-15 bg-[radial-gradient(circle,_var(--color-icc-2)_0%,_transparent_70%)]"></div>
+
+      <!-- Top bar inside overlay: brand + close -->
+      <div class="sticky top-0 z-10 bg-bgc-3/80 backdrop-blur border-b border-bdc-3">
+        <div class="container flex items-center justify-between h-[72px]">
+          <a @click="toggleMobile()" href="index.html" class="flex items-center gap-2 font-mona font-semibold text-[18px] text-fnc-3">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-icc-1)] to-[var(--color-icc-2)] text-fnc-3 text-[14px]">e<sup>+</sup></span>
+            <span>envirisk<span class="text-fnc-4">.</span></span>
+          </a>
+          <button
+            @click="toggleMobile()"
+            aria-label="Close menu"
+            class="inline-flex items-center justify-center w-11 h-11 rounded-full border border-bdc-3 text-fnc-3 hover:bg-fnc-4 hover:border-fnc-4 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M6.225 4.811 4.811 6.225 10.586 12l-5.775 5.775 1.414 1.414L12 13.414l5.775 5.775 1.414-1.414L13.414 12l5.775-5.775-1.414-1.414L12 10.586z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="relative container pt-8 pb-10 min-h-[calc(100vh-72px)] flex flex-col">
+        <nav class="flex flex-col divide-y divide-bdc-3">
+          <a @click="toggleMobile()" href="index.html" class="py-5 font-mona font-semibold text-[18px] hover:text-fnc-4 transition-colors">Home</a>
+
+          <!-- Services accordion -->
+          <div class="py-2">
+            <button
+              @click="mobileMenu = mobileMenu === 'services' ? null : 'services'"
+              :class="mobileMenu === 'services' ? 'text-fnc-4' : ''"
+              class="w-full flex items-center justify-between py-3 font-mona font-semibold text-[18px]"
+            >
+              Services
+              <span :class="mobileMenu === 'services' ? 'rotate-45 bg-fnc-4 border-fnc-4' : ''" class="inline-flex w-9 h-9 items-center justify-center rounded-full border border-bdc-3 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M11 5h2v14h-2zM5 11h14v2H5z"/></svg>
+              </span>
+            </button>
+            <div x-show="mobileMenu === 'services'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="pb-3 flex flex-col gap-1">
+              <a @click="toggleMobile()" href="service-single.html" class="flex items-center justify-between py-3 pl-2 text-fnc-3/80 hover:text-fnc-4 transition-colors"><span>Environmental Risk</span><span class="text-fnc-3/40">→</span></a>
+              <a @click="toggleMobile()" href="service-single.html" class="flex items-center justify-between py-3 pl-2 text-fnc-3/80 hover:text-fnc-4 transition-colors"><span>Climate Advisory</span><span class="text-fnc-3/40">→</span></a>
+              <a @click="toggleMobile()" href="service-single.html" class="flex items-center justify-between py-3 pl-2 text-fnc-3/80 hover:text-fnc-4 transition-colors"><span>Sustainability Strategy</span><span class="text-fnc-3/40">→</span></a>
+              <a @click="toggleMobile()" href="service-single.html" class="flex items-center justify-between py-3 pl-2 text-fnc-3/80 hover:text-fnc-4 transition-colors"><span>Regulatory Disclosure</span><span class="text-fnc-3/40">→</span></a>
+              <a @click="toggleMobile()" href="services.html" class="mt-2 inline-flex items-center gap-2 text-fnc-4 font-semibold text-[14px]">View all services
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Case Studies accordion -->
+          <div class="py-2">
+            <button
+              @click="mobileMenu = mobileMenu === 'cases' ? null : 'cases'"
+              :class="mobileMenu === 'cases' ? 'text-fnc-4' : ''"
+              class="w-full flex items-center justify-between py-3 font-mona font-semibold text-[18px]"
+            >
+              Case Studies
+              <span :class="mobileMenu === 'cases' ? 'rotate-45 bg-fnc-4 border-fnc-4' : ''" class="inline-flex w-9 h-9 items-center justify-center rounded-full border border-bdc-3 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M11 5h2v14h-2zM5 11h14v2H5z"/></svg>
+              </span>
+            </button>
+            <div x-show="mobileMenu === 'cases'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="pb-3 flex flex-col gap-1">
+              <a @click="toggleMobile()" href="case-single.html" class="flex flex-col py-3 pl-2"><span class="text-[11px] uppercase tracking-wider text-fnc-4 font-semibold">Energy</span><span class="text-fnc-3/80">Offshore wind risk modelling</span></a>
+              <a @click="toggleMobile()" href="case-single.html" class="flex flex-col py-3 pl-2"><span class="text-[11px] uppercase tracking-wider text-fnc-4 font-semibold">Finance</span><span class="text-fnc-3/80">Portfolio climate stress test</span></a>
+              <a @click="toggleMobile()" href="case-single.html" class="flex flex-col py-3 pl-2"><span class="text-[11px] uppercase tracking-wider text-fnc-4 font-semibold">Infrastructure</span><span class="text-fnc-3/80">Coastal resilience audit</span></a>
+              <a @click="toggleMobile()" href="cases.html" class="mt-2 inline-flex items-center gap-2 text-fnc-4 font-semibold text-[14px]">Browse all cases
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Insights accordion -->
+          <div class="py-2">
+            <button
+              @click="mobileMenu = mobileMenu === 'insights' ? null : 'insights'"
+              :class="mobileMenu === 'insights' ? 'text-fnc-4' : ''"
+              class="w-full flex items-center justify-between py-3 font-mona font-semibold text-[18px]"
+            >
+              Insights
+              <span :class="mobileMenu === 'insights' ? 'rotate-45 bg-fnc-4 border-fnc-4' : ''" class="inline-flex w-9 h-9 items-center justify-center rounded-full border border-bdc-3 transition-all duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M11 5h2v14h-2zM5 11h14v2H5z"/></svg>
+              </span>
+            </button>
+            <div x-show="mobileMenu === 'insights'" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="pb-3 flex flex-col gap-1">
+              <a @click="toggleMobile()" href="blog.html" class="py-3 pl-2 text-fnc-3/80">All articles</a>
+              <a @click="toggleMobile()" href="blog-single.html" class="py-3 pl-2 text-fnc-3/80">Climate research</a>
+              <a @click="toggleMobile()" href="blog-single.html" class="py-3 pl-2 text-fnc-3/80">Regulatory updates</a>
+            </div>
+          </div>
+
+          <a @click="toggleMobile()" href="#contact" class="py-5 font-mona font-semibold text-[18px] hover:text-fnc-4 transition-colors">Contact</a>
+        </nav>
+
+        <!-- Footer actions -->
+        <div class="mt-auto pt-10 flex flex-col gap-6">
+          <a
+            @click="toggleMobile()"
+            href="#contact"
+            class="inline-flex items-center justify-between gap-2 bg-fnc-4 text-fnc-3 font-semibold font-mona px-6 py-5 rounded-full w-full"
+          >
+            Get a quote
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+          </a>
+          <div class="flex items-center justify-between text-[13px] text-fnc-3/60">
+            <span>hello@envirisk.com</span>
+            <span>+44 20 0000 0000</span>
+          </div>
+        </div>
       </div>
     </div>
+    </template>
   </header>
 
   <!-- ============================================================= -->
@@ -2906,6 +3267,122 @@
       interval: 3000,
     }).mount();
   </script>
+
+  <!-- ============================================================= -->
+  <!-- Footer (index) — Editorial / Dark / Statement                 -->
+  <!-- ============================================================= -->
+  <footer class="relative bg-bgc-3 text-fnc-3 overflow-hidden">
+    <!-- Teal glow -->
+    <div class="pointer-events-none absolute -top-40 -right-40 w-[560px] h-[560px] rounded-full blur-3xl opacity-20 bg-[radial-gradient(circle,_var(--color-icc-2)_0%,_transparent_70%)]"></div>
+    <div class="pointer-events-none absolute -bottom-32 left-1/2 -translate-x-1/2 w-[720px] h-[360px] rounded-full blur-3xl opacity-10 bg-[radial-gradient(circle,_var(--color-icc-2)_0%,_transparent_70%)]"></div>
+
+    <div class="relative container pt-[80px] md:pt-[120px] pb-10">
+
+      <!-- Top: Brand + columns -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+        <!-- Brand block -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+          <a href="index.html" class="flex items-center gap-2 font-mona font-semibold text-[22px]">
+            <span class="inline-flex items-center justify-center w-9 h-9 rounded-full bg-gradient-to-br from-[var(--color-icc-1)] to-[var(--color-icc-2)] text-fnc-3 text-[14px]">e<sup>+</sup></span>
+            <span>envirisk<span class="text-fnc-4">.</span></span>
+          </a>
+          <p class="text-[14px] text-fnc-3/60 leading-relaxed max-w-[360px]">
+            Live environmental data, field audits, and advisory — fused into one continuously-updating picture of your organisation's exposure.
+          </p>
+
+          <!-- Newsletter -->
+          <form class="mt-2">
+            <label class="block text-[11px] uppercase tracking-wider text-fnc-3/50 font-semibold mb-2">Monthly briefing</label>
+            <div class="flex items-center gap-2 p-1.5 rounded-full border border-bdc-3 bg-white/5 backdrop-blur-sm focus-within:border-fnc-4 transition-colors">
+              <input type="email" size="1" placeholder="Your email" class="flex-1 min-w-0 bg-transparent px-3 py-2 text-[14px] text-fnc-3 placeholder:text-fnc-3/40 focus:outline-none">
+              <button type="submit" class="shrink-0 inline-flex items-center gap-2 bg-fnc-4 hover:bg-fnc-3 hover:text-fnc-1 text-fnc-3 font-mona font-semibold text-[13px] px-3 sm:px-4 py-2 rounded-full transition-colors">
+                Subscribe
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+              </button>
+            </div>
+            <p class="text-[11px] text-fnc-3/40 mt-2">No spam. Unsubscribe anytime.</p>
+          </form>
+        </div>
+
+        <!-- Link columns -->
+        <div class="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div>
+            <h4 class="font-mona font-semibold text-[13px] text-fnc-3 uppercase tracking-wider mb-4">Services</h4>
+            <ul class="flex flex-col gap-3 text-[14px] text-fnc-3/60">
+              <li><a href="service-single.html" class="hover:text-fnc-4 transition-colors">Environmental Risk</a></li>
+              <li><a href="service-single.html" class="hover:text-fnc-4 transition-colors">Climate Advisory</a></li>
+              <li><a href="service-single.html" class="hover:text-fnc-4 transition-colors">Sustainability</a></li>
+              <li><a href="service-single.html" class="hover:text-fnc-4 transition-colors">Regulatory</a></li>
+              <li><a href="services.html" class="text-fnc-4 font-semibold">All services →</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-mona font-semibold text-[13px] text-fnc-3 uppercase tracking-wider mb-4">Company</h4>
+            <ul class="flex flex-col gap-3 text-[14px] text-fnc-3/60">
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">About us</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">Our team</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">Careers</a></li>
+              <li><a href="cases.html" class="hover:text-fnc-4 transition-colors">Case studies</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">Press</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-mona font-semibold text-[13px] text-fnc-3 uppercase tracking-wider mb-4">Resources</h4>
+            <ul class="flex flex-col gap-3 text-[14px] text-fnc-3/60">
+              <li><a href="blog.html" class="hover:text-fnc-4 transition-colors">Insights</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">Reports</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">Webinars</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">Guides</a></li>
+              <li><a href="#" class="hover:text-fnc-4 transition-colors">API docs</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-mona font-semibold text-[13px] text-fnc-3 uppercase tracking-wider mb-4">Contact</h4>
+            <ul class="flex flex-col gap-3 text-[14px] text-fnc-3/60">
+              <li><a href="mailto:hello@envirisk.com" class="hover:text-fnc-4 transition-colors">hello@envirisk.com</a></li>
+              <li><a href="tel:+442000000000" class="hover:text-fnc-4 transition-colors">+44 20 0000 0000</a></li>
+              <li class="text-fnc-3/60">14 Finsbury Sq<br>London EC2A 1AH</li>
+            </ul>
+            <div class="mt-5 flex items-center gap-2">
+              <a href="#" aria-label="LinkedIn" class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-bdc-3 hover:bg-fnc-4 hover:border-fnc-4 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.3 18.3V10H5.7v8.3zM7 8.7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm11.3 9.6v-4.5c0-2.4-1.3-3.5-3-3.5-1.4 0-2 .8-2.4 1.3V10H10.3v8.3H13v-4.6c0-1.2.9-1.7 1.7-1.7.9 0 1.5.5 1.5 1.7v4.6z"/></svg>
+              </a>
+              <a href="#" aria-label="X" class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-bdc-3 hover:bg-fnc-4 hover:border-fnc-4 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path d="M18.9 3h3.1l-6.8 7.8L23 21h-6.3l-4.9-6.4L6.1 21H3l7.3-8.3L2.5 3H9l4.4 5.8zM17.8 19.1h1.7L7.3 4.8H5.5z"/></svg>
+              </a>
+              <a href="#" aria-label="YouTube" class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-bdc-3 hover:bg-fnc-4 hover:border-fnc-4 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8zM10 15V9l5 3z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Giant wordmark -->
+      <div class="mt-16 md:mt-24 relative">
+        <div class="overflow-hidden">
+          <h2 class="font-mona font-semibold leading-[0.85] tracking-tight text-[clamp(84px,18vw,300px)] text-fnc-3/[0.08] select-none">
+            envirisk<span class="text-fnc-4/30">.</span>
+          </h2>
+        </div>
+      </div>
+
+      <!-- Bottom fine-print -->
+      <div class="mt-8 pt-6 border-t border-bdc-3 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[12px] text-fnc-3/50">
+        <div>© 2026 Envirisk Advisory Ltd. All rights reserved.</div>
+        <div class="flex items-center gap-5">
+          <a href="#" class="hover:text-fnc-4 transition-colors">Privacy</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Terms</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Cookies</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Modern Slavery</a>
+        </div>
+        <div class="inline-flex items-center gap-2">
+          <span class="inline-block w-2 h-2 rounded-full bg-fnc-4 animate-pulse"></span>
+          <span>All systems operational</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- Hero animations (GSAP timelines — see assets/scripts/main.js) -->
   <script defer src="assets/scripts/main.js"></script>

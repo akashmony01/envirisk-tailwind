@@ -10,7 +10,274 @@
 </head>
 <body class="">
 
-    <section 
+  <!-- ============================================================= -->
+  <!-- Floating pill header (blog.html)                              -->
+  <!-- ============================================================= -->
+  <header
+    x-data="{
+      open: false,
+      scrolled: false,
+      menu: null,
+      closeDrawer() { this.open = false; this.menu = null; document.body.style.overflow = ''; },
+      openDrawer()  { this.open = true;  this.menu = null; document.body.style.overflow = 'hidden'; },
+      toggleDrawer(){ this.open ? this.closeDrawer() : this.openDrawer(); }
+    }"
+    x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 10)"
+    @keydown.escape.window="open && closeDrawer(); menu = null"
+    class="fixed inset-x-0 top-0 z-50 px-4 pt-4"
+  >
+    <div class="mx-auto container">
+      <div
+        :class="scrolled ? 'bg-bgc-3/95 shadow-xl shadow-black/20' : 'bg-bgc-3/70 shadow-lg shadow-black/10'"
+        class="flex items-center justify-between gap-3 pl-4 pr-2 py-2 rounded-full border border-bdc-3 backdrop-blur-lg transition-all duration-300"
+      >
+
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center gap-2 font-mona font-semibold text-[16px] text-fnc-3 pr-4 border-r border-bdc-3">
+          <span class="inline-flex w-7 h-7 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-icc-1)] to-[var(--color-icc-2)] text-fnc-3 text-[12px]">e<sup>+</sup></span>
+          <span>envirisk<span class="text-fnc-4">.</span></span>
+        </a>
+
+        <!-- Desktop nav -->
+        <nav class="hidden lg:flex items-center gap-0.5" @mouseleave="menu = null">
+          <a href="index.html" class="px-3 py-1.5 rounded-full text-[13.5px] font-semibold text-fnc-3/80 hover:bg-white/10 hover:text-fnc-3 transition-colors">Home</a>
+
+          <!-- Services dropdown -->
+          <div class="relative" @mouseenter="menu = 'services'">
+            <button
+              @click="menu = menu === 'services' ? null : 'services'"
+              :class="menu === 'services' ? 'bg-white/10 text-fnc-3' : 'text-fnc-3/80'"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13.5px] font-semibold hover:bg-white/10 hover:text-fnc-3 transition-colors"
+            >
+              Services
+              <svg :class="menu === 'services' ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 transition-transform duration-300"><path d="M12 15.5 5.5 9l1.4-1.4L12 12.7l5.1-5.1L18.5 9z"/></svg>
+            </button>
+            <div
+              x-show="menu === 'services'" x-cloak
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              class="absolute left-0 top-full pt-3"
+            >
+              <div class="w-64 rounded-2xl bg-bgc-3 border border-bdc-3 shadow-2xl shadow-black/30 p-2">
+                <a href="service-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Environmental Risk</span>
+                </a>
+                <a href="service-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Climate Advisory</span>
+                </a>
+                <a href="service-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Sustainability Strategy</span>
+                </a>
+                <a href="service-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Regulatory Disclosure</span>
+                </a>
+                <a href="services.html" class="mt-1 flex items-center justify-between px-3 py-2.5 rounded-xl text-[12px] font-semibold text-fnc-4 hover:bg-fnc-4 hover:text-fnc-3 transition-colors">
+                  View all services
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cases dropdown -->
+          <div class="relative" @mouseenter="menu = 'cases'">
+            <button
+              @click="menu = menu === 'cases' ? null : 'cases'"
+              :class="menu === 'cases' ? 'bg-white/10 text-fnc-3' : 'text-fnc-3/80'"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13.5px] font-semibold hover:bg-white/10 hover:text-fnc-3 transition-colors"
+            >
+              Cases
+              <svg :class="menu === 'cases' ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 transition-transform duration-300"><path d="M12 15.5 5.5 9l1.4-1.4L12 12.7l5.1-5.1L18.5 9z"/></svg>
+            </button>
+            <div
+              x-show="menu === 'cases'" x-cloak
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              class="absolute left-0 top-full pt-3"
+            >
+              <div class="w-64 rounded-2xl bg-bgc-3 border border-bdc-3 shadow-2xl shadow-black/30 p-2">
+                <a href="case-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Energy</span>
+                </a>
+                <a href="case-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Finance</span>
+                </a>
+                <a href="case-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Infrastructure</span>
+                </a>
+                <a href="cases.html" class="mt-1 flex items-center justify-between px-3 py-2.5 rounded-xl text-[12px] font-semibold text-fnc-4 hover:bg-fnc-4 hover:text-fnc-3 transition-colors">
+                  Browse all cases
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Insights dropdown -->
+          <div class="relative" @mouseenter="menu = 'insights'">
+            <button
+              @click="menu = menu === 'insights' ? null : 'insights'"
+              :class="menu === 'insights' ? 'bg-white/10 text-fnc-3' : 'text-fnc-3/80'"
+              class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13.5px] font-semibold hover:bg-white/10 hover:text-fnc-3 transition-colors"
+            >
+              Insights
+              <svg :class="menu === 'insights' ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3 transition-transform duration-300"><path d="M12 15.5 5.5 9l1.4-1.4L12 12.7l5.1-5.1L18.5 9z"/></svg>
+            </button>
+            <div
+              x-show="menu === 'insights'" x-cloak
+              x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 translate-y-2"
+              x-transition:enter-end="opacity-100 translate-y-0"
+              class="absolute left-0 top-full pt-3"
+            >
+              <div class="w-64 rounded-2xl bg-bgc-3 border border-bdc-3 shadow-2xl shadow-black/30 p-2">
+                <a href="blog.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4"></span>
+                  <span class="text-fnc-3 text-[13px] font-semibold">All articles</span>
+                </a>
+                <a href="blog-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Climate research</span>
+                </a>
+                <a href="blog-single.html" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 transition-colors">
+                  <span class="w-1.5 h-1.5 rounded-full bg-fnc-4 group-hover:scale-150 transition-transform"></span>
+                  <span class="text-fnc-3/90 text-[13px] font-semibold">Regulatory updates</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="#contact" class="px-3 py-1.5 rounded-full text-[13.5px] font-semibold text-fnc-3/80 hover:bg-white/10 hover:text-fnc-3 transition-colors">Contact</a>
+        </nav>
+
+        <!-- Right actions -->
+        <div class="flex items-center gap-2">
+          <a href="#contact" class="hidden md:inline-flex items-center gap-2 bg-fnc-4 text-fnc-3 font-mona font-semibold text-[13px] px-4 py-2 rounded-full hover:bg-fnc-3 hover:text-fnc-1 transition-colors">
+            Get a quote
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+          </a>
+          <button
+            @click="toggleDrawer()"
+            aria-label="Toggle menu"
+            class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 text-fnc-3 hover:bg-fnc-4 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4.5 h-4.5"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile right-slide drawer -->
+    <template x-teleport="body">
+      <div x-show="open" x-cloak class="lg:hidden fixed inset-0 z-[60]">
+        <!-- Backdrop -->
+        <div
+          @click="closeDrawer()"
+          x-show="open"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="transition ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        ></div>
+
+        <!-- Drawer panel -->
+        <aside
+          x-show="open"
+          x-transition:enter="transition ease-out duration-300"
+          x-transition:enter-start="translate-x-full"
+          x-transition:enter-end="translate-x-0"
+          x-transition:leave="transition ease-in duration-200"
+          x-transition:leave-start="translate-x-0"
+          x-transition:leave-end="translate-x-full"
+          class="absolute top-0 right-0 h-full w-[86%] max-w-[380px] bg-bgc-3 text-fnc-3 flex flex-col shadow-2xl shadow-black/40"
+        >
+          <!-- Drawer top bar -->
+          <div class="flex items-center justify-between h-[68px] px-5 border-b border-bdc-3">
+            <span class="font-mona font-semibold text-[15px] text-fnc-3/60 uppercase tracking-wider">Menu</span>
+            <button
+              @click="closeDrawer()"
+              aria-label="Close menu"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-full border border-bdc-3 hover:bg-fnc-4 hover:border-fnc-4 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M6.225 4.811 4.811 6.225 10.586 12l-5.775 5.775 1.414 1.414L12 13.414l5.775 5.775 1.414-1.414L13.414 12l5.775-5.775-1.414-1.414L12 10.586z"/></svg>
+            </button>
+          </div>
+
+          <!-- Drawer nav -->
+          <nav class="flex-1 overflow-y-auto px-4 py-4 flex flex-col divide-y divide-bdc-3">
+            <a @click="closeDrawer()" href="index.html" class="py-3.5 font-mona font-semibold text-[16px] hover:text-fnc-4 transition-colors">Home</a>
+
+            <!-- Services accordion -->
+            <div class="py-1">
+              <button @click="menu = menu === 'services' ? null : 'services'" :class="menu === 'services' ? 'text-fnc-4' : ''" class="w-full flex items-center justify-between py-3 font-mona font-semibold text-[16px]">
+                Services
+                <svg :class="menu === 'services' ? 'rotate-90' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 transition-transform duration-300"><path d="M9 6l6 6-6 6z"/></svg>
+              </button>
+              <div x-show="menu === 'services'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="pb-2 pl-3 flex flex-col">
+                <a @click="closeDrawer()" href="service-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Environmental Risk</a>
+                <a @click="closeDrawer()" href="service-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Climate Advisory</a>
+                <a @click="closeDrawer()" href="service-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Sustainability Strategy</a>
+                <a @click="closeDrawer()" href="service-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Regulatory Disclosure</a>
+                <a @click="closeDrawer()" href="services.html" class="mt-1 py-2 text-[13px] text-fnc-4 font-semibold">View all services →</a>
+              </div>
+            </div>
+
+            <!-- Cases accordion -->
+            <div class="py-1">
+              <button @click="menu = menu === 'cases' ? null : 'cases'" :class="menu === 'cases' ? 'text-fnc-4' : ''" class="w-full flex items-center justify-between py-3 font-mona font-semibold text-[16px]">
+                Cases
+                <svg :class="menu === 'cases' ? 'rotate-90' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 transition-transform duration-300"><path d="M9 6l6 6-6 6z"/></svg>
+              </button>
+              <div x-show="menu === 'cases'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="pb-2 pl-3 flex flex-col">
+                <a @click="closeDrawer()" href="case-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Energy</a>
+                <a @click="closeDrawer()" href="case-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Finance</a>
+                <a @click="closeDrawer()" href="case-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Infrastructure</a>
+                <a @click="closeDrawer()" href="cases.html" class="mt-1 py-2 text-[13px] text-fnc-4 font-semibold">Browse all cases →</a>
+              </div>
+            </div>
+
+            <!-- Insights accordion -->
+            <div class="py-1">
+              <button @click="menu = menu === 'insights' ? null : 'insights'" :class="menu === 'insights' ? 'text-fnc-4' : ''" class="w-full flex items-center justify-between py-3 font-mona font-semibold text-[16px]">
+                Insights
+                <svg :class="menu === 'insights' ? 'rotate-90' : ''" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 transition-transform duration-300"><path d="M9 6l6 6-6 6z"/></svg>
+              </button>
+              <div x-show="menu === 'insights'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="pb-2 pl-3 flex flex-col">
+                <a @click="closeDrawer()" href="blog.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">All articles</a>
+                <a @click="closeDrawer()" href="blog-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Climate research</a>
+                <a @click="closeDrawer()" href="blog-single.html" class="py-2 text-[14px] text-fnc-3/70 hover:text-fnc-4 transition-colors">Regulatory updates</a>
+              </div>
+            </div>
+
+            <a @click="closeDrawer()" href="#contact" class="py-3.5 font-mona font-semibold text-[16px] hover:text-fnc-4 transition-colors">Contact</a>
+          </nav>
+
+          <!-- Drawer footer -->
+          <div class="p-5 border-t border-bdc-3 flex flex-col gap-3">
+            <a @click="closeDrawer()" href="#contact" class="inline-flex items-center justify-between gap-2 bg-fnc-4 text-fnc-3 font-mona font-semibold px-5 py-3.5 rounded-full">
+              Get a quote
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" /></svg>
+            </a>
+            <div class="text-[12px] text-fnc-3/50">hello@envirisk.com · +44 20 0000 0000</div>
+          </div>
+        </aside>
+      </div>
+    </template>
+  </header>
+
+    <section
         class="
             py-60 bg-cover bg-center bg-no-repeat relative
             bg-[url('https://demo.awaikenthemes.com/optive/wp-content/uploads/2026/01/page-header-bg.jpg')] 
@@ -294,5 +561,102 @@
       },
     }).mount();
   </script>
+
+  <!-- ============================================================= -->
+  <!-- Footer (blog) — Light / Minimal / Card                        -->
+  <!-- ============================================================= -->
+  <footer class="bg-bgc-2 pt-[80px] md:pt-[120px] pb-10">
+    <div class="container">
+
+      <!-- Standout CTA card -->
+      <div class="relative overflow-hidden rounded-[28px] bg-bgc-3 text-fnc-3 p-6 sm:p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
+        <div class="pointer-events-none absolute -top-32 -right-20 w-[420px] h-[420px] rounded-full blur-3xl opacity-30 bg-[radial-gradient(circle,_var(--color-icc-2)_0%,_transparent_70%)]"></div>
+
+        <div class="relative max-w-[560px]">
+          <span class="inline-block text-[11px] uppercase tracking-wider text-fnc-4 font-semibold">Weekly briefing</span>
+          <h3 class="mt-3 font-mona font-semibold text-[28px] md:text-[36px] lg:text-[42px] leading-tight">
+            The climate-risk digest, in your inbox every Tuesday.
+          </h3>
+          <p class="mt-4 text-[14px] md:text-[15px] text-fnc-3/60 leading-relaxed">
+            Curated insights on regulation, disclosure, and physical risk — written for risk, finance, and sustainability teams.
+          </p>
+        </div>
+
+        <form class="relative w-full lg:w-auto lg:min-w-[380px] max-w-full flex flex-col gap-3">
+          <div class="flex items-center gap-2 p-1.5 rounded-full bg-white/10 border border-bdc-3 backdrop-blur-sm focus-within:border-fnc-4 transition-colors">
+            <input type="email" size="1" placeholder="Your email" class="flex-1 min-w-0 bg-transparent px-3 sm:px-4 py-2.5 text-[14px] text-fnc-3 placeholder:text-fnc-3/40 focus:outline-none">
+            <button type="submit" class="shrink-0 inline-flex items-center justify-center gap-2 bg-fnc-4 hover:bg-fnc-3 hover:text-fnc-1 text-fnc-3 font-mona font-semibold text-[13px] px-3 sm:px-4 py-2.5 rounded-full transition-colors">
+              Subscribe
+            </button>
+          </div>
+          <span class="text-[11px] text-fnc-3/40 px-2">Join 4,800+ practitioners. No spam.</span>
+        </form>
+      </div>
+
+      <!-- Topic cloud -->
+      <div class="mt-12 md:mt-16">
+        <div class="flex items-baseline justify-between mb-5">
+          <span class="text-[11px] uppercase tracking-wider text-fnc-2 font-semibold">Browse topics</span>
+          <a href="blog.html" class="text-[13px] font-mona font-semibold text-fnc-4 hover:text-fnc-1 transition-colors">All articles →</a>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Climate research</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Regulatory</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Physical risk</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Transition risk</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">TCFD</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">ESG strategy</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Scope 3</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Materiality</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Field notes</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Offshore wind</a>
+          <a href="blog.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-bgc-1 border border-bdc-1 text-[13px] font-semibold hover:border-fnc-4 hover:text-fnc-4 transition-colors">Adaptation</a>
+        </div>
+      </div>
+
+      <!-- Thin divider -->
+      <div class="mt-12 md:mt-16 border-t border-bdc-1"></div>
+
+      <!-- Bottom row: logo + inline links + socials -->
+      <div class="pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <a href="index.html" class="flex items-center gap-2 font-mona font-semibold text-[18px]">
+          <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-[var(--color-icc-1)] to-[var(--color-icc-2)] text-fnc-3 text-[13px]">e<sup>+</sup></span>
+          <span>envirisk<span class="text-fnc-4">.</span></span>
+        </a>
+
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] font-semibold">
+          <a href="index.html" class="hover:text-fnc-4 transition-colors">Home</a>
+          <a href="services.html" class="hover:text-fnc-4 transition-colors">Services</a>
+          <a href="cases.html" class="hover:text-fnc-4 transition-colors">Cases</a>
+          <a href="blog.html" class="hover:text-fnc-4 transition-colors">Insights</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Careers</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Contact</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <a href="#" aria-label="LinkedIn" class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-bdc-1 hover:bg-fnc-4 hover:text-fnc-3 hover:border-fnc-4 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.3 18.3V10H5.7v8.3zM7 8.7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm11.3 9.6v-4.5c0-2.4-1.3-3.5-3-3.5-1.4 0-2 .8-2.4 1.3V10H10.3v8.3H13v-4.6c0-1.2.9-1.7 1.7-1.7.9 0 1.5.5 1.5 1.7v4.6z"/></svg>
+          </a>
+          <a href="#" aria-label="X" class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-bdc-1 hover:bg-fnc-4 hover:text-fnc-3 hover:border-fnc-4 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3 h-3"><path d="M18.9 3h3.1l-6.8 7.8L23 21h-6.3l-4.9-6.4L6.1 21H3l7.3-8.3L2.5 3H9l4.4 5.8zM17.8 19.1h1.7L7.3 4.8H5.5z"/></svg>
+          </a>
+          <a href="#" aria-label="RSS" class="inline-flex items-center justify-center w-9 h-9 rounded-full border border-bdc-1 hover:bg-fnc-4 hover:text-fnc-3 hover:border-fnc-4 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M6.2 15.6a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4zM4 10.1v3.2a6.7 6.7 0 0 1 6.7 6.7h3.2A9.9 9.9 0 0 0 4 10.1zM4 4v3.2A12.8 12.8 0 0 1 16.8 20H20C20 11.2 12.8 4 4 4z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Fine print -->
+      <div class="mt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-2 text-[12px] text-fnc-2">
+        <span>© 2026 Envirisk Advisory Ltd.</span>
+        <div class="flex items-center gap-5">
+          <a href="#" class="hover:text-fnc-4 transition-colors">Privacy</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Terms</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Cookies</a>
+          <a href="#" class="hover:text-fnc-4 transition-colors">Editorial policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
